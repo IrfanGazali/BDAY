@@ -15,28 +15,68 @@
     --gold:#d6a85f;
   }
   *{box-sizing:border-box}
+  
+  html, body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body{
-    margin:0; min-height:100vh; overflow:hidden;
-    display:flex; align-items:center; justify-content:center;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: Georgia, "Times New Roman", serif;
-    color:var(--ink);
+    color: var(--ink);
     background:
       radial-gradient(circle at 15% 15%, #ffe2e9 0 7%, transparent 8%),
       radial-gradient(circle at 85% 80%, #ffe8d6 0 8%, transparent 9%),
       var(--bg);
+    overflow-x: hidden;
   }
-  .scene{width:min(92vw,560px); text-align:center; position:relative}
-  .intro{transition:.8s ease}
-  .eyebrow{letter-spacing:.24em;text-transform:uppercase;font:600 11px Arial,sans-serif;color:var(--muted)}
-  h1{font-size:clamp(32px,8vw,54px);font-weight:400;margin:12px 0 8px}
-  .hint{font:14px Arial,sans-serif;color:var(--muted);margin:0 0 28px}
-  .envelope-wrap{perspective:1000px;cursor:pointer;display:inline-block}
+
+  .scene{
+    width: 100%;
+    max-width: 500px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+  }
+
+  /* Intro Section */
+  .intro{
+    width: 100%;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .intro.hide{
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .eyebrow{letter-spacing:.2em;text-transform:uppercase;font:600 11px Arial,sans-serif;color:var(--muted)}
+  h1{font-size:clamp(28px,7vw,48px);font-weight:400;margin:10px 0 6px}
+  .hint{font:13px Arial,sans-serif;color:var(--muted);margin:0 0 24px}
+
+  /* Envelope */
+  .envelope-wrap{perspective:1000px;cursor:pointer;display:inline-block;width:100%;max-width:360px}
   .envelope{
-    width:min(82vw,380px); height:245px; position:relative;
-    transform-style:preserve-3d; transition:transform .25s ease;
-    filter:drop-shadow(0 18px 24px rgba(86,48,48,.14));
+    width: 100%;
+    height: 220px; 
+    position: relative;
+    transform-style: preserve-3d; 
+    transition: transform .25s ease;
+    filter: drop-shadow(0 14px 20px rgba(86,48,48,.12));
+    margin: 0 auto;
   }
-  .envelope:hover{transform:translateY(-5px) rotateX(2deg)}
+  .envelope:hover{transform:translateY(-4px)}
   .env-body{
     position:absolute;inset:0;background:linear-gradient(145deg,#f6c6d1,#eaa0b5);
     border-radius:8px;overflow:hidden;
@@ -48,54 +88,72 @@
   .env-body:after{right:-18%;transform:rotate(-32deg)}
   .flap{
     position:absolute;z-index:4;left:0;top:0;width:0;height:0;
-    border-left:calc(min(82vw,380px)/2) solid transparent;
-    border-right:calc(min(82vw,380px)/2) solid transparent;
-    border-top:128px solid #f9d4dc;
-    transform-origin:top center; transition:transform 1s cubic-bezier(.2,.8,.2,1);
-    filter:drop-shadow(0 1px 1px rgba(100,40,55,.08));
+    border-left: calc(min(100vw - 32px, 360px) / 2) solid transparent;
+    border-right: calc(min(100vw - 32px, 360px) / 2) solid transparent;
+    border-top: 115px solid #f9d4dc;
+    transform-origin: top center; transition: transform 1s cubic-bezier(.2,.8,.2,1);
+    filter: drop-shadow(0 1px 1px rgba(100,40,55,.08));
   }
   .letter{
-    position:absolute;z-index:3;left:7%;width:86%;height:205px;top:28px;
-    background:var(--paper);border-radius:4px;padding:24px 20px;
+    position:absolute;z-index:3;left:6%;width:88%;height:185px;top:20px;
+    background:var(--paper);border-radius:4px;padding:20px 16px;
     box-shadow:0 5px 18px rgba(50,30,30,.12);
     transform:translateY(0);transition:transform 1s cubic-bezier(.2,.8,.2,1);
     display:flex;flex-direction:column;justify-content:center;
   }
   .seal{
-    position:absolute;z-index:5;left:50%;top:108px;transform:translateX(-50%);
-    width:54px;height:54px;border-radius:50%;background:var(--accent);
-    display:grid;place-items:center;color:white;font-size:23px;
+    position:absolute;z-index:5;left:50%;top:95px;transform:translateX(-50%);
+    width:48px;height:48px;border-radius:50%;background:var(--accent);
+    display:grid;place-items:center;color:white;font-size:20px;
     box-shadow:0 4px 10px rgba(120,45,65,.2);transition:.45s ease;
   }
   .envelope.open .flap{transform:rotateX(180deg);z-index:2}
-  .envelope.open .letter{transform:translateY(-125px)}
+  .envelope.open .letter{transform:translateY(-110px)}
   .envelope.open .seal{opacity:0;transform:translateX(-50%) scale(.6)}
+
+  /* Mobile-Centered Details Section */
   .details{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,70px) scale(.95);
-    width:min(92vw,500px);opacity:0;pointer-events:none;
-    background:rgba(255,253,251,.96);border:1px solid #f0d9d5;
-    border-radius:20px;padding:30px 24px;
-    box-shadow:0 22px 60px rgba(80,45,45,.14);
-    transition:.9s cubic-bezier(.2,.8,.2,1);
+    display: none;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255,253,251,.98);
+    border: 1px solid #f0d9d5;
+    border-radius: 20px;
+    padding: 24px 20px;
+    box-shadow: 0 18px 50px rgba(80,45,45,.12);
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.8s cubic-bezier(.2,.8,.2,1), transform 0.8s cubic-bezier(.2,.8,.2,1);
+    margin: auto;
+    max-height: 90dvh;
+    overflow-y: auto;
   }
-  .details.show{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
-  .details h2{font-size:38px;font-weight:400;margin:4px 0 6px}
-  .details .to{color:var(--accent);font:700 12px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}
-  .message{font-size:18px;line-height:1.55;margin:20px auto 25px;max-width:390px}
-  .info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
-  .card{background:#fff7f5;border-radius:12px;padding:13px}
-  .label{font:700 10px Arial,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
-  .value{font-size:16px;margin-top:5px}
-  .rsvp{display:inline-block;border:0;border-radius:999px;padding:13px 24px;
-    background:var(--accent);color:white;font:700 13px Arial,sans-serif;cursor:pointer}
-  .rsvp:hover{filter:brightness(.96);transform:translateY(-1px)}
-  .small{font:11px Arial,sans-serif;color:var(--muted);margin-top:15px}
+
+  .details.show{
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .details h2{font-size:clamp(28px,6vw,36px);font-weight:400;margin:4px 0 6px}
+  .details .to{color:var(--accent);font:700 11px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+  .message{font-size:16px;line-height:1.5;margin:16px auto 20px;max-width:360px}
+  .info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+  .card{background:#fff7f5;border-radius:12px;padding:12px 8px}
+  .label{font:700 10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .value{font-size:15px;margin-top:4px}
+  .rsvp{display:inline-block;border:0;border-radius:999px;padding:12px 28px;
+    background:var(--accent);color:white;font:700 13px Arial,sans-serif;cursor:pointer;width:100%;max-width:220px}
+  .rsvp:hover{filter:brightness(.96)}
+  .small{font:11px Arial,sans-serif;color:var(--muted);margin-top:12px}
+
   canvas{position:fixed;inset:0;pointer-events:none;z-index:20}
-  @media(max-width:500px){
-    .envelope{height:220px}
-    .letter{height:185px}
-    .details{top:52%}
-    .info{grid-template-columns:1fr}
+
+  @media(max-width: 400px){
+    .info{grid-template-columns: 1fr;}
+    .envelope{height: 190px;}
+    .letter{height: 160px; top: 15px;}
+    .seal{top: 80px;}
   }
 </style>
 </head>
@@ -103,6 +161,7 @@
 <canvas id="confetti"></canvas>
 
 <div class="scene">
+  <!-- Intro Envelope Screen -->
   <div class="intro" id="intro">
     <div class="eyebrow">A little surprise for you</div>
     <h1>You’re invited 💌</h1>
@@ -113,8 +172,8 @@
         <div class="env-body"></div>
         <div class="letter">
           <div class="eyebrow">Birthday Dinner</div>
-          <div style="font-size:28px;margin-top:8px">Just you & me ✨</div>
-          <div style="font:12px Arial;color:#9a7d7d;margin-top:10px">A special evening awaits...</div>
+          <div style="font-size:24px;margin-top:6px">Just you & me ✨</div>
+          <div style="font:11px Arial;color:#9a7d7d;margin-top:8px">A special evening awaits...</div>
         </div>
         <div class="flap"></div>
         <div class="seal">♥</div>
@@ -122,6 +181,7 @@
     </div>
   </div>
 
+  <!-- Revealed Details Screen -->
   <section class="details" id="details">
     <div class="to">For one very special person</div>
     <h2>Happy Birthday, <span id="name">ZyZaH</span> ✨</h2>
@@ -147,7 +207,7 @@ const wrap = document.getElementById('envelopeWrap');
 const intro = document.getElementById('intro');
 let opened = false;
 
-// Web Audio API Audio Synthesizer
+// Audio Synthesizer
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playOpenSound() {
@@ -167,7 +227,7 @@ function playOpenSound() {
 
 function playRSVPSound() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 chime chord
+  const notes = [523.25, 659.25, 783.99, 1046.50];
   notes.forEach((freq, index) => {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
@@ -184,7 +244,7 @@ function playRSVPSound() {
 
 function startBackgroundMusic() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
-  const melody = [261.63, 329.63, 392.00, 440.00, 392.00, 329.63]; // Gentle ambient loop
+  const melody = [261.63, 329.63, 392.00, 440.00, 392.00, 329.63];
   let noteIndex = 0;
   
   function playNextNote() {
@@ -210,15 +270,16 @@ wrap.addEventListener('click', () => {
   opened = true;
   playOpenSound();
   envelope.classList.add('open');
+  
   setTimeout(() => {
-    intro.style.opacity = '0';
-    intro.style.transform = 'translateY(-35px) scale(.97)';
+    intro.classList.add('hide');
   }, 700);
+
   setTimeout(() => {
     details.classList.add('show');
     burstConfetti();
     startBackgroundMusic();
-  }, 1050);
+  }, 1000);
 });
 
 function rsvp(){
@@ -229,6 +290,7 @@ function rsvp(){
   btn.disabled = true;
 }
 
+// Confetti System
 const canvas = document.getElementById('confetti');
 const ctx = canvas.getContext('2d');
 let pieces = [];
@@ -236,21 +298,22 @@ function resize(){canvas.width=innerWidth;canvas.height=innerHeight}
 addEventListener('resize',resize); resize();
 
 function burstConfetti(){
-  const cx=innerWidth/2, cy=innerHeight*.38;
-  for(let i=0;i<150;i++){
+  const cx=innerWidth/2, cy=innerHeight/2;
+  for(let i=0;i<120;i++){
     pieces.push({
       x:cx,y:cy,
-      vx:(Math.random()-.5)*13,
-      vy:Math.random()*-12-3,
-      g:.24+Math.random()*.14,
-      size:5+Math.random()*7,
+      vx:(Math.random()-.5)*12,
+      vy:Math.random()*-10-3,
+      g:.24+Math.random()*.12,
+      size:4+Math.random()*6,
       rot:Math.random()*Math.PI,
-      vr:(Math.random()-.5)*.25,
-      life:100+Math.random()*70
+      vr:(Math.random()-.5)*.2,
+      life:90+Math.random()*60
     });
   }
   animate();
 }
+
 let animating=false;
 function animate(){
   if(animating)return;
